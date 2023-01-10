@@ -15,7 +15,7 @@ function swapCanvases(){
         btn.textContent = 'Plot Liquid Sensors';
         atmos = 1;
     };
-    sessionStorage.setItem("atmos", atmos.toString());
+    sessionStorage.setItem("atmos", atmos);
 }
 
 // define the getdata function here

@@ -26,8 +26,8 @@
     <script>
         // get the number of values and what plot from session storage
         let numVals = parseInt(sessionStorage.getItem("numValues")) || 100;
-        let atmos = parseInt(sessionStorage.getItem("atmos")) || 1;
-        sessionStorage.setItem("atmos", atmos.toString());
+        let atmos = sessionStorage.getItem("atmos") || 1;
+        sessionStorage.setItem("atmos", atmos);
 
         // can use getThingData function
         // get and import the data using getData fetch
