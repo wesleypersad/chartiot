@@ -6,7 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Chart IoT Values</title>
     </head>
-    <body>
+    <body onload="plotData()">
         <h1>IoT Data Plots</h1>
         <div class="slidecontainer" style="border: 2px solid orange; padding: 10px;">
             <input type="range" min="1" max="200" value="100" class="slider" id="myRange">
@@ -14,7 +14,7 @@
             <button id="swopButton" onclick="swapCanvases()">Swop Graph Visibility</button>
             <button id="refreshButton" onclick="location.reload()">Refresh Page</button>
         </div>
-        <div>
+        <div style="border: 2px solid orange; padding: 10px;">
             <canvas id="myAtmosChart" width="400" height="140" style="border: 2px solid blue;"></canvas>
             <canvas id="myLiquidChart" width="400" height="140" style="border: 2px solid blue;"></canvas>
         </div>
@@ -24,182 +24,11 @@
     <script src="./functions/functions.js"></script>
 
     <script>
-        // get the number of values and what plot from session storage
-        let numVals = parseInt(sessionStorage.getItem("numValues")) || 100;
-        let atmos = sessionStorage.getItem("atmos") || 1;
-        sessionStorage.setItem("atmos", atmos);
-
-        // can use getThingData function
-        // get and import the data using getData fetch
-        let [temperatures, humidities, gasppms, pressures, levels, turbidities, humAlarms, gasAlarms, levAlarms,  turAlarms,  timestamps,  timestamps2] =  getThingData(numVals);
-
         //get button and canvas elements
         const btn = document.getElementById('swopButton');
         const ctx = document.getElementById('myAtmosChart');
         const ctx2 = document.getElementById('myLiquidChart');
 
-        // set button element
-        if (atmos) {
-            btn.textContent = 'Plot Liquid Sensors';
-            ctx.style.display='block';
-            ctx2.style.display='none';
-        } else {
-            btn.textContent = 'Plot Atmospheric Sensors';
-            ctx.style.display='none';
-            ctx2.style.display='block';
-        };
-
-        // time stamps for atmospheric plots
-        var xValues = timestamps;
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: xValues,
-                datasets: [{
-                    data: temperatures,
-                    borderColor: "green",
-                    fill: false,
-                    label: 'Temperature degC',
-                    yAxisID: 'TempHumid',
-                },{
-                    data: humidities,
-                    borderColor: "blue",
-                    fill: false,
-                    label: 'Humidity %',
-                    yAxisID: 'TempHumid',
-                },{
-                    data: gasppms,
-                    borderColor: "orange",
-                    fill: false,
-                    label: 'Gas ppm',
-                    yAxisID: 'Gas',
-                },{
-                    data: pressures,
-                    borderColor: "cyan",
-                    fill: false,
-                    label: 'Atm Bar',
-                    yAxisID: 'Pressure',
-                },{
-                    data: levAlarms,
-                    borderColor: "red",
-                    fill: false,
-                    label: 'Humidity Alarm',
-                    yAxisID: 'Alarms',
-                },{
-                    data: turAlarms,
-                    borderColor: "gold",
-                    fill: false,
-                    label: 'Gas Alarm',
-                    yAxisID: 'Alarms',
-                }]
-            },
-            options: {
-                legend: {display: true},
-                layout: {
-                        padding: 10
-                        },
-                scales: {
-                    xValues: {
-                        type: 'time',
-                        title: {
-                        display: true,
-                        text: 'Date'
-                        },
-                        time: {
-                            unit: 'hour'
-                        }
-                    },
-                    'TempHumid': {
-                        position: 'left',
-                        min: 0,
-                        max: 100
-                    },
-                    'Gas': {
-                        position: 'left'
-                    },
-                    'Pressure': {
-                        position: 'left'
-                    },
-                    'Alarms': {
-                        position: 'right',
-                        min: 0,
-                        max: 1
-                    }
-                }
-            },
-        });
-
-        // add a second one which may have a different timebase
-        //const ctx2 = document.getElementById('myLiquidChart');
-
-        var xValues = timestamps2;
-        new Chart(ctx2, {
-            type: 'line',
-            data: {
-                labels: xValues,
-                datasets: [{
-                    data: levels,
-                    borderColor: "green",
-                    fill: false,
-                    label: 'Level %',
-                    yAxisID: 'Level',
-                },{
-                    data: turbidities,
-                    borderColor: "blue",
-                    fill: false,
-                    label: 'Tubidity',
-                    yAxisID: 'Turbidity',
-                },{
-                    data: levAlarms,
-                    borderColor: "red",
-                    fill: false,
-                    label: 'Level Alarm',
-                    yAxisID: 'Alarms',
-                },{
-                    data: turAlarms,
-                    borderColor: "gold",
-                    fill: false,
-                    label: 'Turbidity Alarm',
-                    yAxisID: 'Alarms',
-                }]
-            },
-            options: {
-                legend: {display: true},
-                layout: {
-                        padding: 10
-                        },
-                scales: {
-                    xValues: {
-                        type: 'time',
-                        title: {
-                        display: true,
-                        text: 'Date'
-                        },
-                        time: {
-                            unit: 'hour'
-                        }
-                    },
-                    'Level': {
-                        position: 'left',
-                        min: 0,
-                        max: 100
-                    },
-                    'Turbidity': {
-                        position: 'left',
-                        min: 0,
-                        max: 1000
-                    },
-                    'Alarms': {
-                        position: 'right',
-                        min: 0,
-                        max: 1
-                    }
-                }
-            },
-        });
-    </script>
-
-    <script>
         var slider = document.getElementById("myRange");
         var output = document.getElementById("demo");
         slider.value = parseInt(sessionStorage.getItem("numValues"));
